@@ -55,6 +55,7 @@ namespace Backend_component
             services.AddScoped<SongServices>();
             services.AddScoped<AlbumServices>();
             services.AddScoped<ArtistServices>();
+            services.AddScoped<JsonParserServices>();
         }
 
 
