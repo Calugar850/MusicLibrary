@@ -7,10 +7,9 @@ import { ReactSearchAutocomplete } from 'react-search-autocomplete'
 const ArtistList = () => {
     const[artists, setArtists] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchString, setSearchString] = useState('');
 
     let navigate = useNavigate();
-
-
 
     useEffect(() => {
         setLoading(true);
@@ -37,11 +36,20 @@ const ArtistList = () => {
         });
     }
 
+    const handleSearch = (string, results) => {
+        setSearchString(string);
+        console.log(string, results);
+    }
+
     if(loading){
         return <p>Loading...</p>
     }
 
-    const artistsList = artists.map(group => {
+    const filteredArtists = searchString.length > 0 ?
+        artists.filter(artist => artist.name.toLowerCase().includes(searchString.toLowerCase())) :
+        artists;
+
+    const artistsList = filteredArtists.map(group => {
         return <tr key={group.id}>
             <td style={{whiteSpace: 'nowrap'}}>{group.name}</td>
             <td>
@@ -63,6 +71,12 @@ const ArtistList = () => {
                     <Button color="success" tag={Link} to="/artist/new">Add Artist</Button>
                 </div>
                 <h3>Artists</h3>
+                <ReactSearchAutocomplete
+                    items={artists}
+                    onSearch={handleSearch}
+                    autoFocus
+                    placeholder="Search Artists..."
+                />
                 <Table className="mt-4">
                     <thead>
                     <tr>
