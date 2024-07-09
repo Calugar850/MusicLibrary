@@ -7,7 +7,6 @@ const AppNavbar = () => {
     return (
         <Navbar color="dark" dark expand="md">
             <NavbarBrand tag={Link} to="/">Home</NavbarBrand>
-
         </Navbar>
     );
 };

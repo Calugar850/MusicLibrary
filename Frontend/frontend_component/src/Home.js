@@ -9,7 +9,7 @@ const Home = () => {
         <div>
             <AppNavbar/>
             <Container fluid>
-                <Button color="link"><Link to="/artists">See Your Artists</Link></Button>
+                <Button color="link"><Link to="/artists">See All Artists</Link></Button>
                 <Button color="link"><Link to="/albums">See All Albums</Link></Button>
                 <Button color="link"><Link to="/songs">See All Songs</Link></Button>
             </Container>

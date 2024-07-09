@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Button, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import {Link, useParams} from 'react-router-dom';
+import {ReactSearchAutocomplete} from "react-search-autocomplete";
 
 const AlbumList = () => {
     const [albums, setAlbums] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [searchString, setSearchString] = useState('');
 
     const { artistId } = useParams();
 
@@ -22,12 +24,20 @@ const AlbumList = () => {
 
     }, []);
 
+    const handleSearch = (string, results) => {
+        setSearchString(string);
+        console.log(string, results);
+    }
 
     if (loading) {
         return <p>Loading...</p>;
     }
 
-    const albumList = albums.map(album => {
+    const filteredAlbums = searchString.length > 0 ?
+        albums.filter(album => album.title.toLowerCase().includes(searchString.toLowerCase())) :
+        albums;
+
+    const albumList = filteredAlbums.map(album => {
         return <tr key={album.id}>
             <td style={{whiteSpace: 'nowrap'}}>{album.title}</td>
             <td>{album.description}</td>
@@ -39,6 +49,12 @@ const AlbumList = () => {
             <AppNavbar />
             <Container fluid>
                 <h3>Albums</h3>
+                <ReactSearchAutocomplete
+                    items={albums}
+                    onSearch={handleSearch}
+                    autoFocus
+                    placeholder="Search Albums..."
+                />
                 <Table className="mt-4">
                     <thead>
                     <tr>
