@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from './AppNavbar';
+import Snackbar from "@mui/material/Snackbar";
 
 const CreateUpdateAlbum = () => {
     const initialFormState = {
@@ -14,6 +15,8 @@ const CreateUpdateAlbum = () => {
     const navigate = useNavigate();
     const { id,  } = useParams();
     const { artistId } = useParams();
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         if (id !== 'new' && artistId === undefined) {
@@ -26,6 +29,12 @@ const CreateUpdateAlbum = () => {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setAlbum({ ...album, [name]: value });
+    };
+
+    const handleCloseSnackbar = (event, reason) => {
+        setOpen(false);
+        setTimeout(() => {
+        }, 1000);
     };
 
     const handleSubmit = async (event) => {
@@ -42,9 +51,13 @@ const CreateUpdateAlbum = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(album)
+        }).then(() => {
+            setOpen(true);
+        }).catch(() => {
+            setMessage("Unexpected error!");
         });
         setAlbum(initialFormState);
-        artistId ? navigate('/albums') : navigate('artists/');
+        artistId ? navigate('/artists') : navigate('/albums');
     };
 
     const title = <h2>{album.id ? 'Edit Album' : 'Add Album'}</h2>;
@@ -70,6 +83,12 @@ const CreateUpdateAlbum = () => {
                         <Button color="secondary" tag={Link} to="/albums">Cancel</Button>
                     </FormGroup>
                 </Form>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={1000}
+                    message={message}
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     );

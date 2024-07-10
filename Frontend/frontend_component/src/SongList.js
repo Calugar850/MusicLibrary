@@ -3,13 +3,14 @@ import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import { Link, useNavigate } from 'react-router-dom';
 import {ReactSearchAutocomplete} from "react-search-autocomplete";
+import Snackbar from "@mui/material/Snackbar";
 
 const SongList = () => {
     const [songs, setSongs] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchString, setSearchString] = useState('');
-
-    let navigate = useNavigate();
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         setLoading(true);
@@ -33,6 +34,10 @@ const SongList = () => {
         }).then(() => {
             let updatedSongs = [...songs].filter(i => i.id !== id);
             setSongs(updatedSongs);
+            setOpen(true);
+            setMessage("The song was deleted");
+        }).catch(() =>{
+            setMessage("Error on delete song")
         });
     };
 
@@ -44,6 +49,11 @@ const SongList = () => {
         setSearchString('');
     };
 
+    const handleCloseSnackbar = (event, reason) => {
+        setOpen(false);
+        setTimeout(() => {
+        }, 1000);
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -96,6 +106,12 @@ const SongList = () => {
                     </tbody>
                 </Table>
                 <Button color="secondary" tag={Link} to="/">Back</Button>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={1000}
+                    message={message}
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     );

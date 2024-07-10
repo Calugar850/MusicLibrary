@@ -2,18 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from './AppNavbar';
+import Snackbar from "@mui/material/Snackbar";
 
 const CreateUpdateSong = () => {
     const initialFormState = {
         title: '',
         length: '',
-        albumid: '',
+        albumId: '',
     };
 
     const [song, setSong] = useState(initialFormState);
     const navigate = useNavigate();
     const { id } = useParams();
     const { albumId } = useParams();
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         if (id !== 'new' && albumId === undefined) {
@@ -28,12 +31,18 @@ const CreateUpdateSong = () => {
         setSong({ ...song, [name]: value });
     };
 
+    const handleCloseSnackbar = (event, reason) => {
+        setOpen(false);
+        setTimeout(() => {
+        }, 1000);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         if(albumId) {
-            song.albumid = albumId;
+            song.albumId = albumId;
         }else{
-            song.albumid = null;
+            song.albumId = null;
         }
         await fetch('https://localhost:44359/api/Song/' + (song.id ? 'updateSong' : 'createSong'), {
             method: (song.id) ? 'PUT' : 'POST',
@@ -42,9 +51,13 @@ const CreateUpdateSong = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(song)
+        }).then(() => {
+            setOpen(true);
+        }).catch(() => {
+            setMessage("Unexpected error!");
         });
         setSong(initialFormState);
-        albumId ? navigate('/songs') : navigate('/albums');
+        albumId ? navigate('/albums') : navigate('/songs');
     };
 
     const title = <h2>{song.id ? 'Edit Song' : 'Add Song'}</h2>;
@@ -70,6 +83,12 @@ const CreateUpdateSong = () => {
                         <Button color="secondary" tag={Link} to="/songs">Cancel</Button>
                     </FormGroup>
                 </Form>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={1000}
+                    message={message}
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     );

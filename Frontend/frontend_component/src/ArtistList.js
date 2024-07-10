@@ -3,11 +3,14 @@ import { Button, ButtonGroup, Container, Table } from 'reactstrap';
 import AppNavbar from './AppNavbar';
 import {Link, useNavigate} from 'react-router-dom';
 import { ReactSearchAutocomplete } from 'react-search-autocomplete'
+import Snackbar from "@mui/material/Snackbar";
 
 const ArtistList = () => {
     const[artists, setArtists] = useState([]);
     const [loading, setLoading] = useState(false);
     const [searchString, setSearchString] = useState('');
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     let navigate = useNavigate();
 
@@ -33,8 +36,18 @@ const ArtistList = () => {
         }).then(() => {
             let updatedArtists = [...artists].filter(i => i.id !== id);
             setArtists(updatedArtists);
+            setOpen(true);
+            setMessage("The artist was deleted");
+        }).catch(() =>{
+            setMessage("Error on delete artist")
         });
     }
+
+    const handleCloseSnackbar = (event, reason) => {
+        setOpen(false);
+        setTimeout(() => {
+        }, 1000);
+    };
 
     const handleSearch = (string, results) => {
         setSearchString(string);
@@ -93,6 +106,12 @@ const ArtistList = () => {
                     </tbody>
                 </Table>
                 <Button color="secondary" tag={Link} to="/">Back</Button>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={1000}
+                    message={message}
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     );

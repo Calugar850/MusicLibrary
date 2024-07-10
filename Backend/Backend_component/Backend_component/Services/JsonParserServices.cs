@@ -28,39 +28,42 @@ namespace Backend_component.Services
             try
             {
                 string jsonString = File.ReadAllText(pathToFile.PathToFile);
-                var artistObjects = JsonConvert.DeserializeObject<List<JsonPARSER>>(jsonString);
+                var artistObjects = JsonConvert.DeserializeObject<List<ArtistParser>>(jsonString);
 
                 // Extracting artists, albums, and songs from the JSON data
-                foreach (var artist in artistObjects)
+                foreach (var artistItem in artistObjects)
                 {
-                    // Add the artist
-                    //artists.Add(new Artist
-                    //{
-                    //    Name = artist.Name
-                    //});
+                    Artist artist = new Artist()
+                    {
+                        Name = artistItem.Name,
+                    };
+                    _artistDbContext.Add(artist);
+                    _artistDbContext.SaveChanges();
 
                     // Add the albums
-                    foreach (var album in artist.Albums)
+                    foreach (var albumItem in artistItem.Albums)
                     {
-                        //albums.Add(new Album
-                        //{
-                        //    Id = album.Id,
-                        //    Title = album.Title,
-                        //    Description = album.Description,
-                        //    ArtistId = album.ArtistId
-                        //});
+                        Album album = new Album()
+                        {
+                            Title = albumItem.Title,
+                            Description = albumItem.Description,
+                            Artistid = artist.id,
+                        };
+                        _albumDbContext.Add(album);
+                        _albumDbContext.SaveChanges();
 
                         // Add the songs
-                        //foreach (var song in album.Songs)
-                        //{
-                        //    //songs.Add(new Song
-                        //    //{
-                        //    //    Id = song.Id,
-                        //    //    Title = song.Title,
-                        //    //    Length = song.Length,
-                        //    //    AlbumId = song.AlbumId
-                        //    //});
-                        //}
+                        foreach (var songItem in albumItem.Songs)
+                        {
+                            Song song = new Song()
+                            {
+                                Title = songItem.Title,
+                                Length = songItem.Length,
+                                Albumid = album.id,
+                            };
+                            _songDbContext.Songs.Add(song);
+                            _songDbContext.SaveChanges();
+                        }
                     }
                 }
 

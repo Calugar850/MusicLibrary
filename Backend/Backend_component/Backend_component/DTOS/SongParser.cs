@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace Backend_component.DTOS
 {
-    public class JsonPARSER
+    public class songParser
     {
-        public string Name { get; set; }
-        public List<AlbumDTO> Albums { get; set; }
+        public string Title { get; set; }
+        public string Length { get; set; }
     }
 }

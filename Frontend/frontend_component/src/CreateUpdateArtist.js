@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button, Container, Form, FormGroup, Input, Label } from 'reactstrap';
 import AppNavbar from './AppNavbar';
+import Snackbar from "@mui/material/Snackbar";
 
 const CreateUpdateArtist = () => {
     const initialFormState = {
@@ -11,8 +12,8 @@ const CreateUpdateArtist = () => {
     const[artist, setGroup] = useState(initialFormState);
     const navigate = useNavigate();
     const { id } = useParams();
-
-
+    const [message, setMessage] = useState('');
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() =>{
         if(id !== 'new'){
@@ -28,6 +29,12 @@ const CreateUpdateArtist = () => {
         setGroup({ ...artist, [name]: value })
     }
 
+    const handleCloseSnackbar = (event, reason) => {
+        setOpen(false);
+        setTimeout(() => {
+        }, 1000);
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         await fetch('https://localhost:44359/api/Artist/' + (artist.id ?  'updateArtist' : 'createArtist'), {
@@ -38,6 +45,10 @@ const CreateUpdateArtist = () => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(artist)
+        }).then(() => {
+            setOpen(true);
+        }).catch(() => {
+            setMessage("Unexpected error!");
         });
         setGroup(initialFormState);
         navigate('/artists');
@@ -61,6 +72,12 @@ const CreateUpdateArtist = () => {
                         <Button color="secondary" tag={Link} to="/artists">Cancel</Button>
                     </FormGroup>
                 </Form>
+                <Snackbar
+                    open={open}
+                    autoHideDuration={1000}
+                    message={message}
+                    onClose={handleCloseSnackbar}
+                />
             </Container>
         </div>
     )
