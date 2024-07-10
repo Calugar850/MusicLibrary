@@ -7,7 +7,7 @@ const CreateUpdateAlbum = () => {
     const initialFormState = {
         title: '',
         description: '',
-        artistId: '',
+        artistid: '',
     };
 
     const [album, setAlbum] = useState(initialFormState);
@@ -31,7 +31,9 @@ const CreateUpdateAlbum = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if(artistId) {
-            album.artistId = artistId;
+            album.artistid = artistId;
+        }else{
+            album.artistid = null;
         }
         await fetch('https://localhost:44359/api/Album/' + (album.id ? 'updateAlbum' : 'createAlbum'), {
             method: (album.id) ? 'PUT' : 'POST',
@@ -42,7 +44,7 @@ const CreateUpdateAlbum = () => {
             body: JSON.stringify(album)
         });
         setAlbum(initialFormState);
-        navigate('/albums');
+        artistId ? navigate('/albums') : navigate('artists/');
     };
 
     const title = <h2>{album.id ? 'Edit Album' : 'Add Album'}</h2>;
@@ -64,7 +66,7 @@ const CreateUpdateAlbum = () => {
                                onChange={handleChange} autoComplete="description" />
                     </FormGroup>
                     <FormGroup>
-                        <Button color="primary" type="submit">Save</Button>{' '}
+                        <Button color="primary" type="submit">Save</Button>
                         <Button color="secondary" tag={Link} to="/albums">Cancel</Button>
                     </FormGroup>
                 </Form>

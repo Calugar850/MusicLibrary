@@ -38,8 +38,12 @@ const ArtistList = () => {
 
     const handleSearch = (string, results) => {
         setSearchString(string);
-        console.log(string, results);
     }
+
+    const handleClear = () => {
+        setSearchString('');
+    };
+
 
     if(loading){
         return <p>Loading...</p>
@@ -74,6 +78,7 @@ const ArtistList = () => {
                 <ReactSearchAutocomplete
                     items={artists}
                     onSearch={handleSearch}
+                    onClear={handleClear}
                     autoFocus
                     placeholder="Search Artists..."
                 />

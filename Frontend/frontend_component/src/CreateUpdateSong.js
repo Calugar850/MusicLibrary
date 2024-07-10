@@ -7,7 +7,7 @@ const CreateUpdateSong = () => {
     const initialFormState = {
         title: '',
         length: '',
-        albumId: '',
+        albumid: '',
     };
 
     const [song, setSong] = useState(initialFormState);
@@ -31,7 +31,9 @@ const CreateUpdateSong = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         if(albumId) {
-            song.albumId = albumId;
+            song.albumid = albumId;
+        }else{
+            song.albumid = null;
         }
         await fetch('https://localhost:44359/api/Song/' + (song.id ? 'updateSong' : 'createSong'), {
             method: (song.id) ? 'PUT' : 'POST',
@@ -42,7 +44,7 @@ const CreateUpdateSong = () => {
             body: JSON.stringify(song)
         });
         setSong(initialFormState);
-        navigate('/songs');
+        albumId ? navigate('/songs') : navigate('/albums');
     };
 
     const title = <h2>{song.id ? 'Edit Song' : 'Add Song'}</h2>;

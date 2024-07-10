@@ -25,8 +25,12 @@ const AlbumSongs = () => {
 
     const handleSearch = (string, results) => {
         setSearchString(string);
-        console.log(string, results);
     }
+
+    const handleClear = () => {
+        setSearchString('');
+    };
+
 
     if (loading) {
         return <p>Loading...</p>;
@@ -51,8 +55,11 @@ const AlbumSongs = () => {
                 <ReactSearchAutocomplete
                     items={songs}
                     onSearch={handleSearch}
+                    onClear={handleClear}
                     autoFocus
                     placeholder="Search Songs..."
+                    fuseOptions={{ keys: ["title"] }} // Search in the 'title' key
+                    resultStringKeyName="title" // Display 'title' in the dropdown
                 />
                 <Table className="mt-4">
                     <thead>
